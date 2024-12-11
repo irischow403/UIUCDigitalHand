@@ -1,4 +1,9 @@
 
+> About the years covered by the data:
+> * All testing data is from 2024
+> * soil_data in training_data is 2015-2023
+> * All other data in training_data is 2014-2023
+
 ## Existing Data formats
 * meta_data:
   * **Year**
