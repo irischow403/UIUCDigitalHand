@@ -85,3 +85,22 @@
 | Crop | Soybean or Maize |
 | Genetics | For soy: maturity group (0-6, by 1), For Maize: RM (80-130, by 5) |
 
+## More Thoughts
+* We could try to predict some of the other phenotypic data, but would it even be useful to do so? 
+  * It may not improve the yield predictions anyway, since that itself is a Phenotypic variable we are predicting.
+  * It is difficult, since we would have to run our own envirotyping tool, and to do so we have to estimate RM
+* What data is useful for our model input?
+  * From meta_data: 
+    * Lat/Lon
+    * Previous Crop
+  * From trait_data:
+    * Env
+    * Year
+    * Field_Location
+    * Yield
+
+
+* Check what information is available about the hybrids that are expected in the output template
+* Try to get correlation matrices between E / G / P
+* See about composing a matrix of P arrays for a GxE matrix
+* For a GxE matrix, visualize Yield like a heatmap.
