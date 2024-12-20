@@ -14,8 +14,8 @@ library(parallel)  # For parallel computing
 Sys.setlocale("LC_ALL", "English_United States")
 start_time <- Sys.time() # track running time
 
-codes_dir <- "C:/Users/cmg3/Documents/GitHub/APSIMX_SeasonalCharacterization" #where the folder with the codes is
-setwd("C:/Users/cmg3/OneDrive/Documents/seedoil_output") #folder where the output goes
+codes_dir <- "~/UIUCDigitalHand" #where the folder with the codes is
+setwd("C:/Users/cmg3/OneDrive/Documents/Characterization_output") #folder where the output goes
 
 crop <- "Soy" 
 trials_df <- read_csv(paste0(codes_dir,"/seed_cht.csv")) 
