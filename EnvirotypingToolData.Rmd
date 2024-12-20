@@ -1,0 +1,62 @@
+---
+title: "Run Envirotyping tool"
+output: html_document
+date: "2024-12-20"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+setwd("~/UIUCDigitalHand")
+library(readr)
+library(tidyverse)
+library(dplyr)
+```
+
+
+
+```{r}
+
+
+trait_data <- read_csv("data_cleaning/training_data/trait_data.csv")
+
+envirotype_input <- read_csv("data_cleaning/output_data/envirotype_input.csv")
+envirotype_input
+```
+
+
+# Reformat and assign maturity
+
+```{r}
+# Site,Longitude,Latitude,Planting,Genetics,Year
+# Keep only one row for each env
+envirotype_unique <- envirotype_input %>%
+  group_by(Env) %>%
+  slice(1) %>%
+  ungroup()
+```
+
+```{r}
+# Assign maturity of single value (80-119)
+envirotype_unique$Genetics = 95
+# Merge back to original envirotype_input according to Env
+envirotype_input <- envirotype_input %>%
+  left_join(select(envirotype_unique, Env, Genetics), by = "Env")
+
+```
+
+```{r}
+# reformat to what the input looks like
+envirotype_unique 
+
+```
+
+```{r}
+envirotype_unique <- envirotype_unique %>%
+  select(Env, Longitude, Latitude, Date_Planted, Genetics, Year) %>%
+  rename(Site = Env,
+         Planting = Date_Planted)
+```
+
