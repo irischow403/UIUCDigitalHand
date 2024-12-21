@@ -15,10 +15,10 @@ Sys.setlocale("LC_ALL", "English_United States")
 start_time <- Sys.time() # track running time
 
 codes_dir <- "~/UIUCDigitalHand" #where the folder with the codes is
-setwd("C:/Users/cmg3/OneDrive/Documents/Characterization_output") #folder where the output goes
+setwd("~/UIUCDigitalHand/Characterization_output") #folder where the output goes
 
-crop <- "Soy" 
-trials_df <- read_csv(paste0(codes_dir,"/seed_cht.csv")) 
+crop <- "Maize" 
+trials_df <- read_csv(paste0(codes_dir,"/environment_unique.csv")) 
 trials_df <- mutate(trials_df, id_trial = row_number()) %>% rename(X = Longitude, Y = Latitude)
 locs_df <- select(trials_df, X, Y) %>% distinct() %>% mutate(id_loc = row_number())
 trials_df <- left_join(trials_df, locs_df)
@@ -336,3 +336,6 @@ write_csv(daily_charact_x, "output/daily_charact_x.csv")
 end_time <- Sys.time()
 duration <- end_time - start_time
 print(duration)
+
+
+

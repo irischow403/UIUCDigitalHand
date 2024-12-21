@@ -60,3 +60,7 @@ envirotype_unique <- envirotype_unique %>%
          Planting = Date_Planted)
 ```
 
+```{r}
+write_csv(envirotype_unique, "environment_unique.csv")
+```
+
