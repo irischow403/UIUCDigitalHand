@@ -17,7 +17,8 @@ For meta_data, I selected Env,Treatment,City,Farm and merge with other df.
 I obtained lat, and long from envirotype_input. I group by Env and calculated the average.
 For soil_data, I select only Env, `%K Sat`, `%Ca Sat`, `%Mg Sat`, `%Na Sat`, `% Sand`, `% Silt`, `% Clay` and merge them all together by Env
 
-This is how I got to merged_data5 and obtain the csv
+This is how I got to merged_data5 and obtain the csv. As the file size is too large to put in github. I have uploaded it to our google drive. https://drive.google.com/drive/folders/1pWHllpwmzqtKPwm218Wt96MxhtxkEvhT?usp=drive_link
+
 
 I would need help on start to fit a very simple model like random forest. Please try it and let me know if there's further adjustments needed in the merged_data5
 
