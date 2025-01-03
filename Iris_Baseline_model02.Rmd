@@ -2,7 +2,9 @@
 title: "Iris_Baseline_model"
 author: "Iris Chow"
 date: "2024-12-26"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -14,7 +16,10 @@ This is a baseline model using random forest to generate submission
 # Training Data
 
 ```{r}
+library(readr)
+merged_data5 <- read_csv("merged_data5.csv")
 library(randomForest)
+library(tidyverse)
 
 # Assume your data is loaded in a dataframe called merged_data5
 # Ensure categorical variables are factors
@@ -77,6 +82,8 @@ top_50_data <- cleaned_data_treated[, c("Yield_Mg_ha", top_50_vars)]
 
 # View the new dataset
 head(top_50_data)
+write_csv(top_50_data, "top_50_data.csv")
+#top_50_data
 ```
 
 
@@ -88,7 +95,7 @@ rf_model2 <- randomForest(Yield_Mg_ha ~ ., data = top_50_data, importance = TRUE
 # Find RMSE
 ```{r}
 # Load necessary libraries
-install.packages("caret")
+#install.packages("caret")
 library(caret)
 library(randomForest)
 
@@ -117,4 +124,5 @@ print(paste("R-squared:", r_squared))
 ```
 
 
-# Testing Data
+
+
