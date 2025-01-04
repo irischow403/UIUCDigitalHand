@@ -1,0 +1,75 @@
+---
+title: "subsetting_data_05"
+author: "Iris Chow"
+date: "2025-01-04"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Subsetting Training data
+
+```{r}
+library(readr)
+merged_data5 <- read_csv("merged_data5.csv")
+```
+
+```{r}
+# Count the number of occurrences for each Hybrid
+hybrid_counts <- merged_data5 %>%
+  count(Hybrid, sort = TRUE)
+
+# Extract the top 15 Hybrids with the most data points
+top_15_hybrids <- hybrid_counts %>%
+  top_n(15, n)
+
+# Filter the original dataframe to only include the top 15 Hybrids
+subset_train_data_top15hybrid <- merged_data5 %>%
+  filter(Hybrid %in% top_15_hybrids$Hybrid)
+
+# View the subsetted data
+print(subset_train_data_top15hybrid)
+
+write_csv(subset_train_data_top15hybrid,"subset_train_data_top15hybrid.csv")
+
+```
+
+```{r}
+# Count the number of occurrences for each Hybrid
+hybrid_counts <- merged_data5 %>%
+  count(Hybrid, sort = TRUE)
+
+# Extract the top 15 Hybrids with the most data points
+top_10_hybrids <- hybrid_counts %>%
+  top_n(10, n)
+
+# Filter the original dataframe to only include the top 15 Hybrids
+subset_train_data_top10hybrid <- merged_data5 %>%
+  filter(Hybrid %in% top_10_hybrids$Hybrid)
+
+# View the subsetted data
+print(subset_train_data_top10hybrid)
+
+write_csv(subset_train_data_top10hybrid,"subset_train_data_top10hybrid.csv")
+```
+```{r}
+# Count the number of occurrences for each Hybrid
+hybrid_counts <- merged_data5 %>%
+  count(Hybrid, sort = TRUE)
+
+# Extract the top 15 Hybrids with the most data points
+top_5_hybrids <- hybrid_counts %>%
+  top_n(5, n)
+
+# Filter the original dataframe to only include the top 15 Hybrids
+subset_train_data_top5hybrid <- merged_data5 %>%
+  filter(Hybrid %in% top_5_hybrids$Hybrid)
+
+# View the subsetted data
+print(subset_train_data_top5hybrid)
+
+write_csv(subset_train_data_top5hybrid,"subset_train_data_top5hybrid.csv")
+```
+
