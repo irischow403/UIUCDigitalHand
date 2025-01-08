@@ -1,0 +1,139 @@
+---
+title: "Testing_Models_06"
+author: "Iris Chow"
+date: "2025-01-08"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(readr)
+subset_train_data_top5hybrid <- read_csv("~/UIUCDigitalHand/Subset_training_data/subset_train_data_top5hybrid.csv")
+View(subset_train_data_top5hybrid)
+```
+
+```{r}
+# Count the number of missing values in each column
+colSums(is.na(subset_train_data_top5hybrid))
+
+```
+
+
+# Split data into testing and training
+```{r}
+library(caret)
+# Remove rows with missing values
+subset_train_data_top5hybrid <- na.omit(subset_train_data_top5hybrid)
+
+subset_train_data_top5hybrid <- subset_train_data_top5hybrid %>%
+                rename(K_Sat = '%K Sat') %>%
+                rename(Ca_Sat = '%Ca Sat') %>%
+                rename(Mg_Sat = '%Mg Sat') %>%
+                rename(Na_Sat = '%Na Sat') %>%
+                rename(Sand = '% Sand') %>%
+                rename(Silt = '% Silt') %>%
+                rename(Clay = '% Clay') 
+
+# Create a 70/30 split for training/testing
+set.seed(123)  # For reproducibility
+trainIndex <- createDataPartition(subset_train_data_top5hybrid$Yield_Mg_ha, p = 0.7, list = FALSE, times = 1)
+
+# Split the data
+train_data <- subset_train_data_top5hybrid[trainIndex, ]
+test_data  <- subset_train_data_top5hybrid[-trainIndex, ]
+
+# Verify split
+dim(train_data)
+dim(test_data)
+
+```
+
+# Fit random forest model and obtain RMSE and accuracy
+
+```{r}
+# Load necessary libraries
+library(randomForest)
+library(caret)
+
+# Fit the random forest model
+set.seed(123)  # For reproducibility
+rf_model <- randomForest(Yield_Mg_ha ~ ., data = train_data, importance = TRUE)
+
+# Predict on the test data
+rf_predictions <- predict(rf_model, newdata = test_data)
+
+# Calculate RMSE
+rmse <- sqrt(mean((test_data$Yield_Mg_ha - rf_predictions)^2))
+print(paste("RMSE: ", rmse))
+
+
+```
+
+# SVM
+
+
+
+```{r}
+
+# Convert the Env column to a factor
+subset_train_data_top5hybrid$Env <- as.factor(subset_train_data_top5hybrid$Env)
+
+# Check the current levels again
+levels(subset_train_data_top5hybrid$Env)
+
+# Check current levels
+levels(subset_train_data_top5hybrid$Env)
+
+# Adjust levels in new data
+subset_train_data_top5hybrid$Env <- factor(subset_train_data_top5hybrid$Env, levels = levels(subset_train_data_top5hybrid$Env))
+
+
+
+```
+
+
+```{r}
+# Load necessary library
+library(caret)
+
+# Create a 70/30 split for training/testing using caret
+set.seed(123)  # For reproducibility
+trainIndex <- createDataPartition(subset_train_data_top5hybrid$Yield_Mg_ha, p = 0.7, list = FALSE, times = 1)
+
+# Split the data
+train_data <- subset_train_data_top5hybrid[trainIndex, ]
+test_data  <- subset_train_data_top5hybrid[-trainIndex, ]
+
+# Ensure factor levels in test data match those in the training data
+levels(test_data$Env) <- levels(train_data$Env)
+
+# Fit the SVM model
+svm_model <- svm(Yield_Mg_ha ~ ., data = train_data)
+
+# Predict on the test data
+svm_predictions <- predict(svm_model, newdata = test_data)
+
+# Calculate RMSE for SVM
+svm_rmse <- sqrt(mean((test_data$Yield_Mg_ha - svm_predictions)^2))
+print(paste("SVM RMSE: ", svm_rmse))
+
+
+```
+
+# Linear 
+```{r}
+# Fit the linear model
+linear_model <- lm(Yield_Mg_ha ~ ., data = train_data)
+
+# Predict on the test data
+linear_predictions <- predict(linear_model, newdata = test_data)
+
+# Calculate RMSE for Linear Model
+linear_rmse <- sqrt(mean((test_data$Yield_Mg_ha - linear_predictions)^2))
+print(paste("Linear Model RMSE: ", linear_rmse))
+
+```
+
