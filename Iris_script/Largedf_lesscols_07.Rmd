@@ -1,0 +1,122 @@
+---
+title: "Largedf_lesscols_07"
+author: "Iris Chow"
+date: "2025-01-09"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r}
+library(readr)
+subset_train_data_top15hybrid <- read_csv("~/UIUCDigitalHand/Subset_training_data/subset_train_data_top15hybrid.csv")
+#View(subset_train_data_top15hybrid)
+```
+```{r}
+subset_train_data_top15hybrid <- subset_train_data_top15hybrid %>%
+                rename(K_Sat = '%K Sat') %>%
+                rename(Ca_Sat = '%Ca Sat') %>%
+                rename(Mg_Sat = '%Mg Sat') %>%
+                rename(Na_Sat = '%Na Sat') %>%
+                rename(Sand = '% Sand') %>%
+                rename(Silt = '% Silt') %>%
+                rename(Clay = '% Clay') 
+```
+
+# select only 50 columns by PCA
+
+```{r}
+# Load necessary libraries
+library(caret)
+library(dplyr)
+
+```
+
+```{r}
+# Remove non-numeric columns and handle missing values
+numeric_data1 <- subset_train_data_top15hybrid %>%
+  select_if(is.numeric) %>%
+  na.omit()
+
+```
+
+```{r}
+# Perform PCA on the prepared data
+preProc <- preProcess(numeric_data1, method = "pca", pcaComp = 50)
+pca_data <- predict(preProc, numeric_data1)
+
+```
+
+```{r}
+# Perform PCA
+pca_result <- prcomp(numeric_data1, scale. = TRUE)
+
+# View the loadings (contributions of the original variables to the PCs)
+loadings <- pca_result$rotation
+
+```
+
+```{r}
+# Select the loadings for the top 50 principal components
+loadings_top_50 <- loadings[, 1:50]
+
+# View the loadings
+#print(loadings_top_50)
+
+```
+
+```{r}
+# Find the variables with the highest absolute loadings for each PC
+influential_vars <- apply(loadings_top_50, 2, function(x) names(sort(abs(x), decreasing = TRUE)[1:5]))
+
+# View the most influential variables for each of the top 50 PCs
+print(influential_vars)
+```
+# Random Forest
+
+```{r}
+library(caret)
+# Remove rows with missing values
+subset_train_data_top15hybrid <- na.omit(subset_train_data_top15hybrid)
+
+
+
+# Create a 70/30 split for training/testing
+set.seed(123)  # For reproducibility
+trainIndex <- createDataPartition(subset_train_data_top15hybrid$Yield_Mg_ha, p = 0.7, list = FALSE, times = 1)
+
+# Split the data
+train_data <- subset_train_data_top15hybrid[trainIndex, ]
+test_data  <- subset_train_data_top15hybrid[-trainIndex, ]
+
+# Verify split
+dim(train_data)
+dim(test_data)
+```
+
+
+```{r}
+# Select the top 50 variables based on the loadings of PC1
+top_50_vars_pc1 <- names(sort(abs(loadings[, 1]), decreasing = TRUE)[1:50])
+
+# Create a new dataset with only these top 50 variables
+train_data_top_50 <- train_data[, c(top_50_vars_pc1, "Yield_Mg_ha")]
+test_data_top_50 <- test_data[, top_50_vars_pc1]
+
+# Fit the Random Forest model on the new dataset
+set.seed(123)  # For reproducibility
+rf_model_top_50 <- randomForest(Yield_Mg_ha ~ ., data = train_data_top_50, importance = TRUE)
+
+# Predict on the test data
+rf_predictions_top_50 <- predict(rf_model_top_50, newdata = test_data_top_50)
+
+# Calculate RMSE
+rmse_top_50 <- sqrt(mean((test_data$Yield_Mg_ha - rf_predictions_top_50)^2))
+print(paste("Random Forest RMSE with top 50 variables in PC1: ", rmse_top_50))
+
+```
+

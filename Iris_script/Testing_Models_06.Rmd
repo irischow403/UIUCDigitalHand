@@ -333,3 +333,34 @@ print(paste("LightGBM RMSE: ", lgb_rmse))
 
 ```
 
+
+```{r}
+# Load necessary libraries
+library(randomForest)
+library(caret)
+
+# Function to train a Random Forest model with a specific seed
+train_rf_model <- function(seed) {
+  set.seed(seed)
+  model <- randomForest(Yield_Mg_ha ~ ., data = train_data, importance = TRUE)
+  return(model)
+}
+
+# List of prime numbers for seeding
+prime_seeds <- c(101, 103, 107, 109, 113)
+
+# Train multiple models using different seeds
+rf_models <- lapply(prime_seeds, train_rf_model)
+
+# Predict on the test data using each model
+rf_predictions_list <- lapply(rf_models, function(model) predict(model, newdata = test_data))
+
+# Average the predictions
+rf_predictions <- rowMeans(do.call(cbind, rf_predictions_list))
+
+# Calculate RMSE
+rmse <- sqrt(mean((test_data$Yield_Mg_ha - rf_predictions)^2))
+print(paste("Averaged Random Forest RMSE: ", rmse))
+
+```
+
