@@ -1,0 +1,131 @@
+---
+title: "Genetics_merge_08"
+author: "Iris Chow"
+date: "2025-01-11"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# Load the pcaMethods package
+library(pcaMethods)
+
+# Read the RDS file
+env_by_loc_PCA <- readRDS("~/UIUCDigitalHand/genetics_data/env_by_loc_PCA.rds")
+env_by_hybrid_PCA <- readRDS("~/UIUCDigitalHand/genetics_data/env_by_hybrid_PCA.rds")
+genetics_PCA <- readRDS("~/UIUCDigitalHand/genetics_data/genetics_PCA.rds")
+kinship_PCA <- readRDS("~/UIUCDigitalHand/genetics_data/kinship_PCA.rds")
+```
+
+```{r}
+# Export scores matrix (PC coordinates for each sample)
+write.csv(env_by_loc_PCA@scores, "~/UIUCDigitalHand/genetics_data/pca_scores.csv")
+
+# Export loadings matrix (variable contributions to each PC)
+write.csv(env_by_loc_PCA@loadings, "~/UIUCDigitalHand/genetics_data/pca_loadings.csv")
+
+# Export explained variance (R2)
+write.csv(data.frame(
+  PC = 1:length(env_by_loc_PCA@R2),
+  R2 = env_by_loc_PCA@R2,
+  R2_cumulative = env_by_loc_PCA@R2cum
+), "~/UIUCDigitalHand/genetics_data/pca_variance.csv")
+```
+
+```{r}
+library(readr)
+pca_loadings <- read_csv("~/UIUCDigitalHand/genetics_data/pca_loadings.csv")
+pca_scores <- read_csv("~/UIUCDigitalHand/genetics_data/pca_scores.csv")
+pca_variance <- read_csv("~/UIUCDigitalHand/genetics_data/pca_variance.csv")
+```
+
+```{r}
+# Export scores matrix (PC coordinates for each hybrid)
+write.csv(env_by_hybrid_PCA@scores, "~/UIUCDigitalHand/genetics_data/hybrid_pca_scores.csv")
+
+# Export loadings matrix (variable contributions to each PC)
+write.csv(env_by_hybrid_PCA@loadings, "~/UIUCDigitalHand/genetics_data/hybrid_pca_loadings.csv")
+
+# Export explained variance (R2)
+write.csv(data.frame(
+  PC = 1:length(env_by_hybrid_PCA@R2),
+  R2 = env_by_hybrid_PCA@R2,
+  R2_cumulative = env_by_hybrid_PCA@R2cum
+), "~/UIUCDigitalHand/genetics_data/hybrid_pca_variance.csv")
+```
+
+```{r}
+hybrid_pca_loadings <- read_csv("~/UIUCDigitalHand/genetics_data/hybrid_pca_loadings.csv")
+hybrid_pca_scores <- read_csv("~/UIUCDigitalHand/genetics_data/hybrid_pca_scores.csv")
+hybrid_pca_variance <- read_csv("~/UIUCDigitalHand/genetics_data/hybrid_pca_variance.csv")
+```
+
+
+```{r}
+str(genetics_PCA)
+```
+
+```{r}
+# Export scores matrix (PC coordinates for each sample)
+write.csv(genetics_PCA@scores, "~/UIUCDigitalHand/genetics_data/genetic_pca_scores.csv")  # assuming the object is named geno_PCA
+
+# Export loadings matrix (SNP contributions to each PC)
+write.csv(genetics_PCA@loadings, "~/UIUCDigitalHand/genetics_data/genetic_pca_loadings.csv")
+
+# Export explained variance (R2)
+write.csv(data.frame(
+  PC = 1:length(genetics_PCA@R2),
+  R2 = genetics_PCA@R2,
+  R2_cumulative = genetics_PCA@R2cum
+), "~/UIUCDigitalHand/genetics_data/genetic_pca_variance.csv")
+```
+
+```{r}
+genetic_pca_loadings <- read_csv("~/UIUCDigitalHand/genetics_data/genetic_pca_loadings.csv")
+genetic_pca_scores <- read_csv("~/UIUCDigitalHand/genetics_data/genetic_pca_scores.csv")
+genetic_pca_variance <- read_csv("~/UIUCDigitalHand/genetics_data/genetic_pca_variance.csv")
+```
+
+```{r}
+
+```
+
+```{r}
+str(kinship_PCA)
+```
+```{r}
+# Extract the x component
+pca_scores <- kinship_PCA$x
+
+kinship_PCA$scale
+
+# Convert to data frame
+pca_df <- as.data.frame(pca_scores)
+
+# Write to CSV file
+write.csv(pca_df, "~/UIUCDigitalHand/genetics_data/kinship_PCA_scores.csv", row.names = FALSE)
+
+```
+
+```{r}
+kinship_PCA_scores <- read_csv("~/UIUCDigitalHand/genetics_data/kinship_PCA_scores.csv")
+```
+```{r}
+# Export scores matrix (PC coordinates for each sample)
+write.csv(kinship_PCA@scores, "~/UIUCDigitalHand/genetics_data/kinship_pca_scores.csv")  # assuming the object is named geno_PCA
+
+# Export loadings matrix (SNP contributions to each PC)
+write.csv(kinship_PCA@loadings, "~/UIUCDigitalHand/genetics_data/kinship_pca_loadings.csv")
+
+# Export explained variance (R2)
+write.csv(data.frame(
+  PC = 1:length(kinship_PCA@R2),
+  R2 = kinship_PCA@R2,
+  R2_cumulative = kinship_PCA@R2cum
+), "~/UIUCDigitalHand/genetics_data/kinship_pca_variance.csv")
+```
+
+

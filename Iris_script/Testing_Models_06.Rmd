@@ -363,4 +363,8 @@ rmse <- sqrt(mean((test_data$Yield_Mg_ha - rf_predictions)^2))
 print(paste("Averaged Random Forest RMSE: ", rmse))
 
 ```
+```{r}
+# subset 50- 50 hybeod
+test
+```
 
