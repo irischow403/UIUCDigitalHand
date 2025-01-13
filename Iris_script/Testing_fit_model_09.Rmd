@@ -1,0 +1,97 @@
+---
+title: "Tesing_fit_model_09"
+author: "Iris Chow"
+date: "2025-01-12"
+output: html_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(readr)
+combined_testing_w_location <- read_csv("~/UIUCDigitalHand/Merged_data_Iris/combined_testing_w_location.csv")
+merged_data5 <- read_csv("~/UIUCDigitalHand/Merged_data_Iris/merged_data5.csv")
+Submission_Template_2024 <- read_csv("~/UIUCDigitalHand/Merged_data_Iris/1_Submission_Template_2024.csv")
+```
+
+```{r}
+head(combined_testing_w_location)
+head(merged_data5)
+head(Submission_Template_2024)
+```
+
+# One hot encoding
+
+```{r}
+#install.packages("fastDummies")
+library(fastDummies)
+
+```
+
+```{r}
+df_onehot_train <- dummy_cols(merged_data5,
+                        remove_first_dummy = TRUE,      # drop 1 level per factor
+                        remove_selected_columns = TRUE) # remove original factor/char columns
+head(df_onehot_train)
+
+```
+
+```{r}
+df_onehot_test <- dummy_cols(combined_testing_w_location,
+                        remove_first_dummy = TRUE,      # drop 1 level per factor
+                        remove_selected_columns = TRUE) # remove original factor/char columns
+head(df_onehot_test)
+```
+
+
+
+```{r}
+library(dplyr)
+library(readr)
+library(randomForest)
+
+# 1. Train a model on merged_data5
+model_rf <- randomForest(Yield_Mg_ha ~ . , data = df_onehot_train)
+
+# 1. Identify columns used in the model
+training_cols <- names(df_onehot_train)
+
+# 2. Identify which columns are missing in the test
+missing_in_test <- setdiff(df_onehot_train, names(df_onehot_test))
+
+# 3. Create placeholder columns in the test set
+for(col in missing_in_test) {
+  df_onehot_test[[col]] <- NA
+}
+
+
+# 4. Predict
+test_preds <- predict(model_lm, newdata = combined_testing_w_location)
+
+test_results <- combined_testing_w_location %>%
+  mutate(Predicted_Yield_Mg_ha = test_preds) %>%
+  select(Env, Hybrid, Predicted_Yield_Mg_ha)
+
+# 3. Create the submission file
+submission_df <- Submission_Template_2024 %>%
+  left_join(test_results, by = c("Env", "Hybrid")) %>%
+  mutate(Yield_Mg_ha = Predicted_Yield_Mg_ha) %>%
+  select(-Predicted_Yield_Mg_ha)
+
+write_csv(submission_df, "Submission_2024_with_predictions.csv")
+
+```
+
+
+
+```{r}
+df_onehot <- dummy_cols(df,
+                        remove_first_dummy = TRUE,      # drop 1 level per factor
+                        remove_selected_columns = TRUE) # remove original factor/char columns
+head(df_onehot)
+
+```
+
