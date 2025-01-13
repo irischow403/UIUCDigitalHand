@@ -41,37 +41,18 @@ library(randomForest)
 library(glmnet)
 ```
 ```{r}
-env_cov <- read_csv("data_cleaning/training_data/env_cov.csv")
-meta_data <- read_csv("data_cleaning/training_data/meta_data.csv")
-soil_data <- read_csv("data_cleaning/training_data/soil_data.csv")
-trait_data <- read_csv("data_cleaning/training_data/trait_data.csv")
-weather_season <- read_csv("data_cleaning/training_data/weather_season.csv")
-weather_year <- read_csv("data_cleaning/training_data/weather_year.csv")
-envirotype_input <- read_csv("data_cleaning/output_data/envirotype_input.csv")
+#env_cov <- read_csv("~/UIUCDigitalHand/data_cleaning/training_data/env_cov.csv")
+meta_data <- read_csv("~/UIUCDigitalHand/data_cleaning/training_data/meta_data.csv")
+soil_data <- read_csv("~/UIUCDigitalHand/data_cleaning/training_data/soil_data.csv")
+#trait_data <- read_csv("data_cleaning/training_data/trait_data.csv")
+weather_season <- read_csv("~/UIUCDigitalHand/data_cleaning/training_data/weather_season.csv")
+weather_year <- read_csv("~/UIUCDigitalHand/data_cleaning/training_data/weather_year.csv")
+hybrid_genetics_PCs <- read_csv("~/UIUCDigitalHand/data_cleaning/training_data/hybrid_genetics_PCs.csv")
+hybrid_env_PCs <- read_csv("~/UIUCDigitalHand/data_cleaning/training_data/hybrid_env_PCs.csv")
+#envirotype_input <- read_csv("data_cleaning/output_data/envirotype_input.csv")
 ```
 
 
-```{r}
-all_df <- c(env_cov,meta_data, soil_data,trait_data, weather_season, weather_year)
-```
-
-```{r}
-# Print structure of each dataframe with a separator
-for(name in names(all_df)) {
-    cat("\n=====", name, "=====\n")
-    str(all_df[[name]])
-}
-```
-
-```{r}
-# select useful variable in trait_data
-# Remove "Replicate" "Block""Plot""Range" "Pass" "Hybrid_orig_name" "Hybrid_Parent1""Hybrid_Parent2"  
-selected_trait_data <- trait_data %>%
-  select(-Replicate, -Block, -Plot, -Range, -Pass, -Hybrid_orig_name, -Hybrid_Parent1, -Hybrid_Parent2)
-
-# Display the first few rows of the modified dataframe
-head(selected_trait_data)
-```
 
 ```{r}
 # Merge selected_trait_data and env_cov data by Env
